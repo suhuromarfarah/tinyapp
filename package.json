@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/suhuromar/tinyapp/issues"
   },
-  "homepage": "https://github.com/suhuromar/tinyapp#readme"
+  "homepage": "https://github.com/suhuromar/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
