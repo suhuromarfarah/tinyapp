@@ -13,9 +13,9 @@ app.set("view engine", "ejs");
 const generateRandomString = () => {
   var result           = '';
   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  var numOfChar = characters.length;
+  var numChar= characters.length;
   for ( let i = 0; i < 6; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * numOfChar));
+     result += characters.charAt(Math.floor(Math.random() * numChar));
   }
   return result;
 };
