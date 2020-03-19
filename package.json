@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/suhuromar/tinyapp#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.5",
     "ejs": "^3.0.1",
     "express": "^4.17.1"
   },
