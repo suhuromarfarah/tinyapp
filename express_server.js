@@ -50,6 +50,7 @@ app.get("/users.json", (req, res) => {
   res.json(users);
 });
 
+// new short url
 app.get("/urls/new", (req, res) => {
   // let templateVars = {
   //   user: req.cookies['user']
@@ -66,14 +67,18 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
+// fixed deleted entry
 app.delete("/urls/:shortURL", (req, res) => {
-  if (req.session.user_id) {
-    const shortURL = req.params.shortURL;
-    delete urlDatabase[shortURL]
+  const user = uers[req.session_id]
+  const shortURL = req.params.shortURL;
+
+  if (user.id === userDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
     res.redirect("/urls");
+  } else {
+    res.redirect("/login"); 
   }
-  res.redirect("/login");
-})
+});
 
 app.put("/urls/:shortURL", (req, res) => {
   const user = users[req.session.user_id];
@@ -86,6 +91,7 @@ app.put("/urls/:shortURL", (req, res) => {
   }
 });
 
+//redirection
 app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.session.user_id];
   let templateVars = {
@@ -103,6 +109,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`urls/${shortURL}`)
 });
 
+// shorturl + longurl pairs
 app.get("/urls", (req, res) => { //changing this to:
   const user = users[req.session.user_id];
   if (user) {
@@ -120,6 +127,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", { user: undefined });
 });
 
+// if true .. register .. if not .. error
 app.post("/register", (req, res) => {
   if (getUserByEmail(req.body.email, users)) {
     res.status(400).send("User already exists.");
