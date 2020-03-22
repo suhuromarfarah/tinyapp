@@ -4,19 +4,8 @@ const PORT = 5000; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-// const hashedPassword = bcrypt.hashSync(password, 10);
 const { generateRandomString, getUserByEmail, urlsForUser} = require("./helpers.js");
 const methodOverride = require('method-override')
-
-app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieSession({
-  name: "session",
-  keys: ["user_id"],
-}));
-app.use(methodOverride('_method'));
-
-
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
@@ -29,11 +18,19 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
+
+app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieSession({
+  name: "session",
+  keys: ["user_id"],
+}));
+app.use(methodOverride('_method'));
+
 
 // function checkUserEmail(emailAddress) {
 //   for (const user in users) {
@@ -129,7 +126,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", { user: undefined });
 });
 
-// if true .. register .. if not .. error
+// if true .. register .. if already taken .. error
 app.post("/register", (req, res) => {
   if (getUserByEmail(req.body.email, users)) {
     res.status(400).send("User already exists.");
@@ -147,12 +144,6 @@ app.post("/register", (req, res) => {
   }
 });
 
-
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
-
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
   if (urlDatabase[req.params.shortURL]) {
@@ -162,8 +153,6 @@ app.get("/u/:shortURL", (req, res) => {
     res.send("404 Not Found.")
   }
 });
-
-
 
 app.get("/login", (req, res) => {
   res.render("urls_login", {user: undefined});
