@@ -6,6 +6,7 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 // const hashedPassword = bcrypt.hashSync(password, 10);
 const { generateRandomString, getUserByEmail, urlsForUser} = require("./helpers.js");
+const methodOverride = require('method-override')
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,6 +14,7 @@ app.use(cookieSession({
   name: "session",
   keys: ["user_id"],
 }));
+app.use(methodOverride('_method'));
 
 
 const users = { 
@@ -69,10 +71,10 @@ app.get("/urls/new", (req, res) => {
 
 // fixed deleted entry
 app.delete("/urls/:shortURL", (req, res) => {
-  const user = uers[req.session_id]
+  const user = users[req.session.user_id]
   const shortURL = req.params.shortURL;
 
-  if (user.id === userDatabase[shortURL].userID) {
+  if (user.id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
     res.redirect("/urls");
   } else {
@@ -105,7 +107,7 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   // const user = users[req.session.user_id];
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = { longURL: req.body.longURL, userID: req.session.user_id};
   res.redirect(`urls/${shortURL}`)
 });
 
@@ -152,9 +154,13 @@ app.post("/register", (req, res) => {
 
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  // const shortURL = req.params.shortURL;
-  res.redirect(longURL);
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  if (urlDatabase[req.params.shortURL]) {
+    res.redirect(longURL);
+  } else {
+    res.statusCode = 400;
+    res.send("404 Not Found.")
+  }
 });
 
 
