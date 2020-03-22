@@ -31,16 +31,6 @@ app.use(cookieSession({
 }));
 app.use(methodOverride('_method'));
 
-
-// function checkUserEmail(emailAddress) {
-//   for (const user in users) {
-//     if (users[user].email === emailAddress) {
-//       return true;
-//     }
-//   }
-//   return false;
-// };
-
 app.get("/", (req, res) => {
   res.redirect("/urls/");
 });
@@ -51,10 +41,6 @@ app.get("/users.json", (req, res) => {
 
 // new short url
 app.get("/urls/new", (req, res) => {
-  // let templateVars = {
-  //   user: req.cookies['user']
-  // };
-  // res.render("urls_new", templateVars);
   const user = users[req.session.user_id];
   if (user) {
     let templateVars = {
